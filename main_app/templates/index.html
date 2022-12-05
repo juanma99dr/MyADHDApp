@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Brain Building - My ADHD App.</h1>
+    <p>Welcome to Brain Building</p>
+    
+    <h2>Probando</h2>
+    <ul>
+        <li>{{pomodoros}}</li>
+        <li>Nombre del pomodoro: {{pomodoros.0.name}} --- Duracion: {{pomodoros.0.duration}} min.</li>
+        <li>{{tags}}</li>
+        <li>{{tags.0}}</li>
+    </ul>
+</div>
+
+{% endblock %}

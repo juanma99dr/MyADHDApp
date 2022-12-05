@@ -1,0 +1,28 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<div class="container mt-4 row ">
+    {% if user.is_authenticated %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row ms-5">
+            
+            <h2>{{pageTitle}}</h2>
+            <div class="form-group mt-5">
+                <label for="name">Name</label>
+                <input type="text" name="name" required value="{{tasktag.name}}" class="form-control" id="name" placeholder="Name">
+            </div>
+
+            <div class="form-group mt-1">
+                <input class="btn btn-outline-secondary btn-block mt-3" type="submit" value="Submit" />
+            </div>
+
+        </div>
+    </form>
+    {% else %}
+    <div class="col-12">
+        <h2 class="mt-5">You need to be logged in to see this page.</h2>
+    {% endif %}
+</div>
+{% endblock %}

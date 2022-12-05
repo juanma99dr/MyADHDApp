@@ -1,0 +1,146 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/pomodoro.css' %}" />
+<script src="https://open.spotify.com/embed-podcast/iframe-api/v1" async></script>
+<script src="{% static 'js/spotify.js' %}"></script>
+
+<div id="pomodoro" class="container my-5">
+    <div id="title" class="mb-3">
+        <h1>Pomodoro</h1>
+    </div>
+    <div class="row justify-content-between mt-5">
+        <div class="col-md-8 mt-5">
+            <div class="row justify-content-center">
+                <template v-if="!pomodoro.completed">
+                    <div id="pomodoroTimer">
+                        <h1 id="timer">${pomodoroTime}</h1>
+                        <button v-if="!pomodoro.started" class="btn btn-outline-danger btn-block mt-3"
+                            @click="startPomodoro">Start Pomodoro</button>
+                        <button v-else-if="pomodoro.paused" class="btn btn-outline-success btn-block mt-4"
+                            @click="playPomodoro">Play Pomodoro</button>
+                        <button v-else class="btn btn-outline-secondary btn-block mt-4" @click="pausePomodoro">Pause
+                            Pomodoro</button>
+                        <button @click="newPomodoro" class="btn btn-outline-danger btn-block mt-2">Reset
+                            Pomodoro</button>
+                    </div>
+                </template>
+
+                <template v-if="pomodoro.completed">
+                    <div id="shortBreakTimer">
+                        <h1 id="timer">${shortBreakTime}</h1>
+                        <button v-if="!shortBreak.started" class="btn btn-outline-primary btn-block mt-4"
+                            @click="startShortBreak">Start Short
+                            Break</button>
+                        <button v-else-if="shortBreak.paused" class="btn btn-outline-success btn-block mt-4"
+                            @click="playShortBreak">Play Short Break</button>
+                        <button v-else-if="!shortBreak.completed" class="btn btn-outline-secondary btn-block mt-4"
+                            @click="pauseShortBreak">Pause Short Break</button>
+                        <button @click="newPomodoro" class="btn btn-outline-danger btn-block mt-2">Reset
+                            Pomodoro</button>
+                    </div>
+                </template>
+            </div>
+            <div id="main" class="ms-1 my-3">
+
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+
+                        <div class="form-group col mt-1">
+                            <label for="name">Name</label>
+                            <input type="text" v-model="auxName" name="name" default="Pomodoro" maxlength="200" required
+                                class="form-control" id="id_name" placeholder="Name">
+                        </div>
+
+                        <div v-show="!pomodoro.started" class="form-group col mt-1">
+                            <label for="duration">Time</label>
+                            <input type="number" name="duration" min="1" max="60" required v-model="auxMinutes"
+                                class="form-control " id="id_duration" placeholder="Time">
+                        </div>
+
+                        <div v-show="!pomodoro.started" class="form-group col mt-1">
+                            <label for="duration">Rest Time</label>
+                            <input type="number" name="restTime" min="1" max="60" required v-model="auxRestMinutes"
+                                class="form-control" placeholder="Rest time">
+                        </div>
+
+                        <div class="form-group mt-1 col">
+                            <label for="tag">Tag</label>
+                            <select class="form-control" required name="tag" id="id_tag">
+                                <option value="">----------</option>
+                                {% for item in numTag %}
+                                <option value="{{ item.tag_id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-1">
+                        <label for="content">Tasks to do:</label>
+                        <textarea class="form-control" name="description" v-model="auxDescription" id="description"
+                            rows="5" id="id_description"
+                            placeholder="-Task 1: Lorem Ipsum dolor sit amet, consectetur adipiscing elit...&#10;-Task 2: Lorem Ipsum dolor sit amet, consectetur adipiscing elit...&#10;-Task 3: Lorem Ipsum dolor sit amet, consectetur adipiscing elit..."></textarea>
+                    </div>
+
+                    {% if user.is_authenticated %}
+                    <div class="form-group" v-if="finished">
+                        <input class="btn btn-outline-secondary btn-block mt-3" type="submit" value="Save Pomodoro" />
+                    </div>
+                    {% endif %}
+                </form>
+
+            </div>
+        </div>
+
+        <div class="col-md-4 mt-3">
+            <div id="opcionesAdmin" class="text-center">
+                {% if perms.main_app.is_admin %}
+                <button @click="toogleAction" class="button btn btn-outline-secondary mb-1" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapse" aria-expanded="false" aria-controls="collapse">
+                    Admin Config
+                </button>
+                <p class="text-center">
+                    <template v-if="toogle">
+                        <i class="bi bi-chevron-up"></i>
+                    </template>
+                    <template v-else>
+                        <i class="bi bi-chevron-down"></i>
+                    </template>
+                </p>
+                <div class="collapse mb-2" id="collapse">
+                    <div class="card card-body">
+                        <a href="{% url 'pomodoro-tag-create' %}" class="button btn btn-outline-secondary">Create
+                            Tag</a>
+                        <div class="row mt-3">
+
+                            {% for tag in numTag %}
+                            <p>
+                                <span class="badge bg-secondary rounded-pill">{{ tag.name | capfirst }}</span>
+                                <a href="{% url 'pomodoro-tag-update' tag.tag_id %}"
+                                    class="bi bi-pencil-square text-black"></a>
+                                <a href="{% url 'pomodoro-tag-delete' tag.tag_id %}" class="bi bi-trash text-black"></a>
+                            </p>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div id="embed-iframe" class="mt-3"></div>
+            <ul class="list-group list-group-item-secondary mt-3">
+                <div class="card card-header text-white bg-dark text-center">Users Ranking</div>
+                <li class="list-group-item d-flex justify-content-between align-items-start" v-for="user in users">
+                    <div class="bold ">${user.username}</div>
+                    <div class="fw-bold"> ${user.total_duration} points</div>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+<script type="application/javascript" src="{% static 'js/pomodoroVue.js' %}"></script>
+
+{% endblock %}

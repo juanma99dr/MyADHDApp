@@ -1,0 +1,217 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+{% load social_share %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/post_detail.css' %}" />
+
+<div class="container mt-5">
+  <div class="row">
+    <!-- MAIN DIV -->
+    <div class="col-md-6 col-xl-8 col-xxl-8 mt-3 me-5">
+      <!-- Post -->
+      <div class="row mb-3">
+        <div class="col col-1">
+          <a href="{% url 'profile' post.author.user.id  %}">
+            <img src="{{ profilePic.url }}" alt="Avatar" class="img-fluid  img-thumbnail"
+              style="width: 50px; min-width: 30px;" />
+          </a>
+        </div>
+        <div class="col col-10">
+          <h2>{{ post.title | capfirst }}</h2>
+
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <p class="card-text"> <span class="badge bg-secondary rounded-pill"> {{ post.tag }}</span> <small
+              class="text-muted">Posted by
+              {{ post.author.user.username | capfirst }} {{ post.date_posted }}{% if post.edited == True %}
+              | Edited
+              {% endif %}
+            </small>
+          </p>
+        </div>
+        <div class="col me-2">
+          <p class="card-text text-end me-2"><small class="text-muted"><i class="bi bi-eye"></i>
+              {{ post.visits }}
+            </small></p>
+        </div>
+      </div>
+      <!-- POST BODY -->
+      <p>{{ post.content | linebreaks }}</p>
+      {% if post.image %}
+      <div class="text-center mb-2">
+        <img id="post-image" class="card-img-bottom" style="width: 65%;">{{post.image_tagView}}</img>
+      </div>
+
+      {% endif %}
+
+      <!-- SOCIAL SHARE SECTION -->
+      <div class="row my-3">
+        <div id="social-button">
+          {% post_to_facebook post.get_absolute_url '<div class="bi bi-facebook"></div>' %}
+        </div>
+        <div id="social-button">
+          {% post_to_twitter post.get_absolute_url post.get_absolute_url '<div class="bi bi-twitter"></div>' %}
+        </div>
+        <div id="social-button">
+          {% post_to_whatsapp post.get_absolute_url '<div class="bi bi-whatsapp"></div>' %}
+        </div>
+        <div id="social-button">
+          {% post_to_facebook post.get_absolute_url '<div class="bi bi-facebook"></div>' %}
+        </div>
+      </div>
+
+      <div class="row my-3">
+        <div class="text-start">
+          <!-- ADMIN AND USER OPTIONS TO EDIT OR DELETE THE POST -->
+          {% if user == post.author or perms.main_app.is_admin %}
+          <a href="{% url 'post-update' post.post_id %}" class="button btn btn-outline-secondary">Edit Post</a>
+          <a href="{% url 'post-delete' post.post_id %}" class="button btn btn-outline-secondary">Delete Post</a>
+          {% endif %}
+          <!-- ADD COMMENT -->
+          <a href="{% url 'comment-create' post.post_id  %}" class="btn btn-outline-secondary">Add Comment</a>
+
+        </div>
+      </div>
+
+      <!-- COMMENTS SECTION -->
+      <div id="comments" class="container mb-5">
+        {% for comment in comments %}
+        <div class="card mb-3">
+          <div class="card-header">
+            <div class="row mb-3">
+              <div class="col col-1 me-1">
+                <a href="{% url 'profile' comment.user.user.id  %}">
+                  <img src="{{ comment.user.profilePic.url }}" alt="Avatar" class="img-fluid img-thumbnail"
+                    style="width: 50px; min-width: 30px;" />
+                </a>
+              </div>
+              <div class="col col-10">
+                <h5 class="card-title">{{ comment.user.user.username | capfirst }}</h5>
+                <small class="text-muted">Posted {{ comment.date_posted }}
+                  {% if comment.edited == True %}
+                  | Edited
+                  {% endif %}
+                </small>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+
+            <p class="card-text">{{ comment.content | linebreaks }}</p>
+            {% if comment.image %}
+            <div id=" img-comment" class="img-fluid mb-2">
+              <img class="card-img">{{comment.image_tagView}}</img>
+            </div>
+            {% endif %}
+          </div>
+          <div class="card-body">
+            <p class="card-text">
+              {% if user == comment.user or perms.main_app.is_admin %}
+              <a href="{% url 'comment-update' comment.comment_id %}" class="bi bi-pencil-square text-black"></a>
+              <a href="{% url 'comment-delete' comment.comment_id %}" class="bi bi-trash text-black"></a>
+              {% endif %}
+
+
+            </p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="col-md-4 col-xl-3 col-xxl-3 ">
+
+      <!-- CREATE POST -->
+      {% if user.is_authenticated %}
+      <div class="row mx-0 mb-3">
+        <a href="{% url 'post-create' %}" class="button btn btn-outline-secondary">Create Post</a>
+      </div>
+      {% else %}
+      <p class=" text-center">Please <a href="{% url 'login'%}?next={{request.path}}">login</a> to create a post.</p>
+      {% endif %}
+
+      <!-- About the community card -->
+      <div class="card mb-3">
+        <div class=" card-header text-white bg-dark text-center">About the community</div>
+        <div class="card-body">
+          <p class="card-text">Free community for a variety of conversations and posts between people with ADHD.</p>
+          <div class="row">
+            <div class="col">
+              <div class="row text-center"> <small>{{ users }}</small></div>
+              <div class="row text-center"><span>Members</span></div>
+            </div>
+            <div class="col">
+              <div class="row text-center"> <small>{{ postNum }}</small></div>
+              <div class="row text-center"><span>Entries</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related posts card -->
+      <ul class="list-group list-group-item-secondary mt-5">
+        <div class="card card-header text-white bg-dark text-center">Related posts</div>
+        {% for post in relatedPosts %}
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto ">
+            <a class="stretched-link" href="{{ post.get_absolute_url }}"></a>
+            <div class="fw-bold ">{{ post.title | capfirst | truncatechars:24}}</div>
+            <small>Posted by {{ post.author.user.username | capfirst }}</small>
+          </div>
+          <span class="badge bg-secondary rounded-pill">{{ post.visits }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+
+      <!-- Rules card -->
+      <ul class="list-group list-group-numbered my-5">
+        <div class="card card-header text-white bg-dark text-center">Community Rules</div>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto ">
+            <div class="fw-bold ">Do not personally attack other users</div>
+            <small>Aggression and hostility are not welcome. Insults and harassment of other users can result in
+              expulsion.</small>
+          </div>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto ">
+            <div class="fw-bold ">No conspiracy theories, misinformation or trolling</div>
+            <small>It is not allowed to spread conspiracy theories: in topics that are posted against the consensus of
+              the
+              overwhelming majority of the scientific community, sources and data that justify that discrepancy will
+              be
+              requested.</small>
+          </div>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto ">
+            <div class="fw-bold ">No conspiracy theories, misinformation or trolling</div>
+            <small>It is not allowed to spread conspiracy theories: in topics that are posted against the consensus of
+              the
+              overwhelming majority of the scientific community, sources and data that justify that discrepancy will
+              be
+              requested.</small>
+          </div>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto ">
+            <div class="fw-bold ">We do not tolerate discrimination, intolerance or the apology of violence</div>
+            <small>All discrimination (racist, sexist, xenophobic, homophobic, etc.) will be withdrawn.
+
+              Nor is dehumanization allowed, the exaltation of the dictatorship, apology for Nazism, or hate
+              speech.</small>
+          </div>
+        </li>
+      </ul>
+
+      <br>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

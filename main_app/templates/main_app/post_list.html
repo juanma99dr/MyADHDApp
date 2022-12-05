@@ -1,0 +1,208 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/post_list.css' %}" />
+
+<div class="container" id="app">
+  <!-- TITLE -->
+  <div id="title" class="ms-1 mt-5 mb-3">
+    <h1>Forum</h1>
+  </div>
+  <div class="row">
+
+    <!-- MAIN DIV -->
+    <div class="col-md-6 col-xl-8 col-xxl-8 me-3">
+      <!-- Search -->
+      <form method='GET'>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" name='query' placeholder="Post Title" aria-label="Post Title"
+            value='{{ request.GET.query }}'>
+          <input class="button btn btn-outline-secondary" type='submit' value="Search post">
+        </div>
+      </form>
+
+      <!-- Posts -->
+      {% for post in posts %}
+      <div class="card mb-3">
+        <a href="{{ post.get_absolute_url }}" class="stretched-link "></a>
+        <div class="card-header">
+          <div class="row mb-1">
+            <div class="col col-1">
+              <img src="{{ post.author.profilePic.url }}" alt="Avatar" class="img-fluid"
+                style="width: 50px; min-width: 30px;" />
+            </div>
+            <div class="col col-10">
+              <h2>{{ post.title | capfirst }}</h2>
+              <p class="card-text"><small class="text-muted">Posted by
+                {{ post.author.user.username | capfirst }} {{ post.date_posted | timesince:now }}
+                ago.
+              </small></p>
+            </div>
+            
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="card-text">{{ post.content | capfirst | truncatechars:200 }}</p>
+          {% if post.image %}
+          <div class="text-center mb-2">
+            <img class="card-img-bottom">{{post.image_tagView}}</img>
+          </div>
+          {% endif %}
+
+        </div>
+
+      </div>
+      {% if perms.main_app.is_admin %}
+      <p class="ms-1">
+        <a href="{% url 'post-update' post.post_id %}" class="bi bi-pencil-square text-black"></a>
+        <a href="{% url 'post-delete' post.post_id %}" class="bi bi-trash text-black mb-3"></a>
+      </p>
+      {% endif %}
+      {% endfor %}
+
+      <!-- Pagination -->
+      <div class="mt-3 mb-5 text-center">
+        <span class="step-links">
+          {% if page_obj.has_previous %}
+          <a href="?page=1">&laquo; First</a>
+          <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+          {% endif %}
+
+          <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+          </span>
+
+          {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">Next</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="col-md-4 col-xl-3 col-xxl-3 ">
+      <div class="row mx-0 mb-2">
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'post-create' %}" class="button btn btn-outline-secondary mb-1">Create Post</a>
+
+        {% else %}
+        <p class=" text-center">Please <a href="{% url 'login'%}?next={{request.path}}">login</a> to create a post.</p>
+        {% endif %}
+        {% if perms.main_app.is_admin %}
+        <button @click="toogleAction" class="button btn btn-outline-secondary mb-1" type="button"
+          data-bs-toggle="collapse" data-bs-target="#collapse" aria-expanded="false" aria-controls="collapse">
+          Admin Config
+        </button>
+        <p class="text-center">
+          <template v-if="toogle">
+            <i class="bi bi-chevron-up"></i>
+          </template>
+          <template v-else>
+            <i class="bi bi-chevron-down"></i>
+          </template>
+        </p>
+        <div class="collapse mb-1" id="collapse">
+          <div class="card card-body">
+            <a href="{% url 'forum-tag-create' %}" class="button btn btn-outline-secondary">Create Tag</a>
+            <div class="row mt-3">
+
+              {% for tag in tags %}
+              <p>
+                <span class="badge bg-secondary rounded-pill">{{ tag.name | capfirst }}</span>
+                <a href="{% url 'forum-tag-update' tag.tag_id %}" class="bi bi-pencil-square text-black"></a>
+                <a href="{% url 'forum-tag-delete' tag.tag_id %}" class="bi bi-trash text-black"></a>
+              </p>
+
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        {% endif %}
+
+      </div>
+
+
+
+      <!-- About the community card -->
+      <div class="card mb-3">
+        <div class=" card-header text-white bg-dark text-center">About the community</div>
+        <div class="card-body">
+          <p class="card-text">Free community for a variety of conversations and posts between people with ADHD.</p>
+          <div class="row">
+            <div class="col ">
+              <div class="row text-center"> <small>{{ users }}</small></div>
+              <div class="row text-center"><span>Members</span></div>
+            </div>
+            <div class="col">
+              <div class="row text-center"> <small>{{ postNum }}</small></div>
+              <div class="row text-center"><span>Entries</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Most-relevant posts card -->
+      <ul class="list-group list-group-numbered mt-5">
+        <div class="card card-header text-white bg-dark text-center">Most relevant posts</div>
+        {% for post in postByVisits %}
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto ">
+            <a class="stretched-link" href="{{ post.get_absolute_url }}"></a>
+            <div class="fw-bold ">{{ post.title | capfirst | truncatechars:24}}</div>
+            <small>Posted by {{ post.author.user.username | capfirst }}</small>
+          </div>
+          <span class="badge bg-secondary rounded-pill">{{ post.visits }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+
+      <!-- Rules card -->
+      <ul class="list-group list-group-numbered my-5">
+        <div class="card card-header text-white bg-dark text-center">Community Rules</div>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto ">
+            <div class="fw-bold ">Do not personally attack other users</div>
+            <small>Aggression and hostility are not welcome. Insults and harassment of other users can result in
+              expulsion.</small>
+          </div>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto ">
+            <div class="fw-bold ">No conspiracy theories, misinformation or trolling</div>
+            <small>It is not allowed to spread conspiracy theories: in topics that are posted against the consensus of
+              the
+              overwhelming majority of the scientific community, sources and data that justify that discrepancy will be
+              requested.</small>
+          </div>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto ">
+            <div class="fw-bold ">No conspiracy theories, misinformation or trolling</div>
+            <small>It is not allowed to spread conspiracy theories: in topics that are posted against the consensus of
+              the
+              overwhelming majority of the scientific community, sources and data that justify that discrepancy will be
+              requested.</small>
+          </div>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto ">
+            <div class="fw-bold ">We do not tolerate discrimination, intolerance or the apology of violence</div>
+            <small>All discrimination (racist, sexist, xenophobic, homophobic, etc.) will be withdrawn.
+
+              Nor is dehumanization allowed, the exaltation of the dictatorship, apology for Nazism, or hate
+              speech.</small>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+<script src="{% static 'js/showAdminConfig.js' %}"></script>
+
+
+{% endblock %}

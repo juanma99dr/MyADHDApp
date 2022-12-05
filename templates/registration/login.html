@@ -1,0 +1,37 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="container mt-5">
+
+  {% if form.errors %}
+  <p>Your username and password didn't match. Please try again.</p>
+  {% endif %}
+
+  {% if not user.is_authenticated %}
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" name="username" class="form-control" id="username" placeholder="Username">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+      </div>
+    </div>
+    <div>
+      <input class="btn btn-outline-secondary btn-block mt-3 mb-3" type="submit" value="Login" />
+      <input type="hidden" name="next" value="{{ next }}" />
+    </div>
+  </form>
+  <p>You don't have an account? <a href="{% url 'register'%}?next={{request.path}}">Register</a></p>
+
+  {% else %}
+  <p>You are already logged in.</p>
+  {% endif %}
+
+  <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+
+</div>
+{% endblock %}
