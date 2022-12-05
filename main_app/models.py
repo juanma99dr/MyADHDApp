@@ -318,7 +318,7 @@ class Event(models.Model):
     event_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, help_text="Unique ID for this particular event")
     title = models.CharField(help_text="Enter the title of the event", max_length=100)
-    description = models.TextField(help_text="Enter the description of the event", max_length=1000, null=True, blank=True)  
+    content = models.TextField(help_text="Enter the description of the event", max_length=1000, null=True, blank=True)  
     start_time = models.DateTimeField(help_text="Enter the start time of the event")
     end_time = models.DateTimeField(help_text="Enter the end time of the event")
     user = models.ForeignKey(
@@ -327,8 +327,8 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
-    def get_description(self):
-        return self.description
+    def get_content(self):
+        return self.content
 
     def get_user(self):
         """Returns the user who created the event."""

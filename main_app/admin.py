@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Pomodoro, PomodoroTag, Post, Comment, ForumTag, Task, TaskTag, User, Profile
+from .models import Pomodoro, PomodoroTag, Post, Comment, ForumTag, Task, TaskTag, Event, User, Profile
 
 # ------ COMMON SECTION -------
 
@@ -74,3 +74,11 @@ class TaskTagAdmin(admin.ModelAdmin):
     list_display = ('name', 'tag_id')
     fields = ['name']
 
+# ------ EVENTS SECTION ------
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('title', 'content', 'user', 'event_id')
+    ordering = ('title',)
+    list_filter = ('user',)
+    fields = ['title', 'user', 'content',('start_time','end_time')]
