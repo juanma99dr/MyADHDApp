@@ -101,7 +101,7 @@
                                         <small><span class="badge bg-secondary rounded-pill">{{ task.tag }}</span>
                                             <a href="{% url 'task-update' task.task_id %}"
                                                 class="bi bi-pencil-square text-black"></a>
-                                            <a href="{% url 'task-delete' task.task_id %}"
+                                                No tasks to do. <a href="{% url 'task-delete' task.task_id %}"
                                                 class="bi bi-trash text-black"></a>
 
                                         </small>
@@ -114,7 +114,12 @@
                     </div>
                 </div>
             </div>
+            {% else %}
+            <div class="alert alert-primary" role="alert">
+                No tasks to do.
+            </div>
             {% endif %}
+            
 
             {% if completedTasks %}
             <div class="accordion-item">
