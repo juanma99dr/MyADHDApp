@@ -3,10 +3,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from main_app.forms import NewUserForm, UpdateUserForm, UpdateProfileForm
 from django.contrib.auth.models import User
-from main_app.models import Pomodoro, PomodoroTag, Post, Comment, ForumTag, Task, TaskTag, Profile
+from main_app.models import *
 from django.views import generic
 from django.utils import timezone
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -14,10 +15,13 @@ from django.urls import reverse_lazy
 from .serializers import UserSerializer, PomodoroSerializer
 from rest_framework import generics
 from rest_framework.decorators import api_view
+from .utils import Calendar
+from datetime import datetime
+from django.utils.safestring import mark_safe
+from .utils import Calendar
+
 
 # INDEX VIEW
-
-
 def index(request):
     pomodoros = Pomodoro.objects.all()
     tags = PomodoroTag.objects.all()
@@ -28,11 +32,10 @@ def index(request):
                   }
                   )
 
+
 # USER VIEWS
 
 # USER REGISTRATION VIEW
-
-
 def register_request(request):
     if request.method == "POST":
         form = NewUserForm(request.POST)
@@ -46,8 +49,6 @@ def register_request(request):
     return render(request=request, template_name="register.html", context={"register_form": form})
 
 # PROFILE VIEW
-
-
 class ProfileDetailView(LoginRequiredMixin, generic.DetailView):
     model = Profile
     template_name = 'profile.html'
@@ -60,8 +61,6 @@ class ProfileDetailView(LoginRequiredMixin, generic.DetailView):
         return context
 
 # PROFILE UPDATE VIEW
-
-
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
     fields = ['profilePic', 'bio']
@@ -95,6 +94,9 @@ class PomodoroCreateView(CreateView):
         return super().form_valid(form)
 
 
+# POMODORO TAG VIEWS
+
+# POMODORO TAG CREATE VIEW
 class PomodoroTagCreateView(CreateView, LoginRequiredMixin):
     model = PomodoroTag
     fields = ['name']
@@ -106,7 +108,7 @@ class PomodoroTagCreateView(CreateView, LoginRequiredMixin):
         context["pageTitle"] = "Create Tag"
         return context
 
-
+# POMODORO TAG UPDATE VIEW
 class PomodoroTagUpdateView(UpdateView, LoginRequiredMixin):
     model = PomodoroTag
     fields = ['name']
@@ -118,11 +120,42 @@ class PomodoroTagUpdateView(UpdateView, LoginRequiredMixin):
         context["pageTitle"] = "Update Tag"
         return context
 
+# POMODORO TAG DELETE VIEW
 
 class PomodoroTagDeleteView(DeleteView, LoginRequiredMixin):
     model = PomodoroTag
     template_name = 'pomodoro_tag_confirm_delete.html'
     success_url = reverse_lazy("pomodoro")
+
+
+# EVENT VIEWS
+
+# CALENDAR VIEW
+class CalendarView(generic.ListView, LoginRequiredMixin):
+    model = Event
+    template_name = 'cal/calendar.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # use today's date for the calendar
+        d = get_date(self.request.GET.get('day', None))
+
+        # Instantiate our calendar class with today's year and date
+        cal = Calendar(d.year, d.month, self.request.user)
+
+        # Call the formatmonth method, which returns our calendar as a table
+        if self.request.user.is_authenticated:
+            html_cal = cal.formatmonth(withyear=True)
+            context['calendar'] = mark_safe(html_cal)
+        return context
+
+def get_date(req_day):
+    if req_day:
+        year, month = (int(x) for x in req_day.split('-'))
+        return date(year, month, day=1)
+    return datetime.today()
+
 
 
 # TASK VIEWS
@@ -244,8 +277,6 @@ class PostListView(generic.ListView):
         return context
 
 # DETAIL VIEW
-
-
 class PostDetailView(generic.DetailView):
     model = Post
     context_object_name = 'post'
@@ -271,8 +302,6 @@ class PostDetailView(generic.DetailView):
         return self.render_to_response(context)
 
 # CREATE VIEW
-
-
 class PostCreateView(LoginRequiredMixin, generic.CreateView):
     model = Post
     fields = ['title', 'image', 'content', 'tag']
@@ -309,8 +338,6 @@ class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
         return super().form_valid(form)
 
 # DELETE VIEW
-
-
 class PostDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Post
     success_url = reverse_lazy("forum")
@@ -341,8 +368,6 @@ class CommentCreateView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 # UPDATE VIEW
-
-
 class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Comment
     fields = ['content', 'image']
@@ -361,9 +386,8 @@ class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
         form.instance.edited = True
         return super().form_valid(form)
 
+
 # DELETE VIEW
-
-
 class CommentDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Comment
     template_name = 'comment_confirm_delete.html'
@@ -387,8 +411,6 @@ class ForumTagCreateView(LoginRequiredMixin, generic.CreateView):
         return context
 
 # UPDATE VIEW
-
-
 class ForumTagUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = ForumTag
     fields = ['name']
@@ -401,8 +423,6 @@ class ForumTagUpdateView(LoginRequiredMixin, generic.UpdateView):
         return context
 
 # DELETE VIEW
-
-
 class ForumTagDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = ForumTag
     success_url = reverse_lazy("forum")
@@ -420,15 +440,11 @@ def api_root(request, format=None):
     })
 
 # ALL USERS
-
-
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 # ALL POMODOROS
-
-
 class PomodoroList(generics.ListAPIView):
     queryset = Pomodoro.objects.all()
     serializer_class = PomodoroSerializer

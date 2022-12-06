@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+{% load static %}
+
+{% if user.is_authenticated %}
+<link rel="stylesheet" href="{% static 'css/calendar.css' %}" />
+<div class="container my-5">
+    {{ calendar }}
+</div>
+{% else %}
+    
+<div class="col-12">
+    <h2 class="mt-5">You need to be logged in to see this page.</h2>
+{% endif %}
+
+{% endblock %}

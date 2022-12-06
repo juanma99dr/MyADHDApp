@@ -312,7 +312,7 @@ class Task(models.Model):
     def get_user(self):
         """Returns the user who created the event."""
         return self.user
-    
+
 # Model for Event
 class Event(models.Model):
     event_id = models.UUIDField(

@@ -49,6 +49,11 @@ urlpatterns += [
 
 ]
 
+# calendar urls
+urlpatterns += [
+    re_path(r'^calendar/$', views.CalendarView.as_view(), name='calendar'),
+]
+
 # Task urls
 urlpatterns += [
     re_path(r'^task/$', views.TaskCreateView.as_view(), name='task'),
