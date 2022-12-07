@@ -1,0 +1,36 @@
+#pomodoroTimer {
+  background-color: #f5f5f5;
+  border: 1px solid #E0194E;
+  border-radius: 3px;
+  padding: 10px;
+  margin: 10px;
+  width: 200px;
+  height: 200px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  display: inline-block;
+  vertical-align: top; }
+
+#shortBreakTimer {
+  background-color: #f5f5f5;
+  border: 1px solid #E0194E;
+  border-radius: 3px;
+  padding: 10px;
+  margin: 10px;
+  width: 200px;
+  height: 200px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  display: inline-block;
+  vertical-align: top; }
+
+#timer {
+  font-size: 50px;
+  font-weight: bold;
+  color: #333; }
+
+/*# sourceMappingURL=pomodoro.css.map */

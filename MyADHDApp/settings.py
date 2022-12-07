@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     'main_app.apps.MainAppConfig',
     'django_social_share',
     'rest_framework',
-
 ]
 
 MIDDLEWARE = [
@@ -111,7 +110,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/css/'
 # serve js files
 

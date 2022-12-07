@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Pomodoro, PomodoroTag, Post, Comment, ForumTag, Task, TaskTag, Event, User, Profile
+from .models import *
 
 # ------ COMMON SECTION -------
 
