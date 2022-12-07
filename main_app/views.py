@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
-from main_app.forms import NewUserForm, UpdateUserForm, UpdateProfileForm
+from main_app.forms import NewUserForm, UpdateUserForm, UpdateProfileForm, PostForm, EventForm
 from django.contrib.auth.models import User
 from main_app.models import *
 from django.views import generic
@@ -18,8 +18,7 @@ from rest_framework.decorators import api_view
 from .utils import Calendar
 from datetime import datetime
 from django.utils.safestring import mark_safe
-from .utils import Calendar
-
+import calendar
 
 # INDEX VIEW
 def index(request):
@@ -136,18 +135,21 @@ class CalendarView(generic.ListView, LoginRequiredMixin):
     template_name = 'cal/calendar.html'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
         # use today's date for the calendar
         d = get_date(self.request.GET.get('day', None))
 
         # Instantiate our calendar class with today's year and date
         cal = Calendar(d.year, d.month, self.request.user)
 
+        context = super().get_context_data(**kwargs)
+
         # Call the formatmonth method, which returns our calendar as a table
         if self.request.user.is_authenticated:
             html_cal = cal.formatmonth(withyear=True)
             context['calendar'] = mark_safe(html_cal)
+            context['prev_month'] = prev_month(d)
+            context['next_month'] = next_month(d)   
+
         return context
 
 def get_date(req_day):
@@ -156,6 +158,31 @@ def get_date(req_day):
         return date(year, month, day=1)
     return datetime.today()
 
+def prev_month(d):
+    first = d.replace(day=1)
+    prev_month = first - timedelta(days=1)
+    month = 'month=' + str(prev_month.year) + '-' + str(prev_month.month)
+    return month
+
+def next_month(d):
+    days_in_month = calendar.monthrange(d.year, d.month)[1]
+    last = d.replace(day=days_in_month)
+    next_month = last + timedelta(days=1)
+    month = 'month=' + str(next_month.year) + '-' + str(next_month.month)
+    return month
+
+def event(request, event_id=None):
+    instance = Event()
+    if event_id:
+        instance = get_object_or_404(Event, pk=event_id)
+    else:
+        instance = Event()
+    
+    form = EventForm(request.POST or None, instance=instance)
+    if request.POST and form.is_valid():
+        form.save()
+        return HttpResponseRedirect(reverse('calendar'))
+    return render(request, 'cal/event.html', {'form': form})
 
 
 # TASK VIEWS

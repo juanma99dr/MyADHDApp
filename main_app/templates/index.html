@@ -1,17 +1,11 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container my-5">
     <h1 class="text-center">Brain Building - My ADHD App.</h1>
-    <p>Welcome to Brain Building</p>
-    
-    <h2>Probando</h2>
-    <ul>
-        <li>{{pomodoros}}</li>
-        <li>Nombre del pomodoro: {{pomodoros.0.name}} --- Duracion: {{pomodoros.0.duration}} min.</li>
-        <li>{{tags}}</li>
-        <li>{{tags.0}}</li>
-    </ul>
+    <iframe
+        src="https://calendar.google.com/calendar/embed?height=600&wkst=2&bgcolor=%23ffffff&ctz=UTC&mode=MONTH&showTz=0&showCalendars=0&showTabs=1&showPrint=1&showDate=1&showNav=1&showTitle=0&title=ADHD&src=Zjg1MGQ3YjViYzA3MjdmYmM3MmYxY2YwYzQ4ZTliMmJlNWRkYTQ1ZWJiNDRhYTRmYTczMjljNTlhYmU3MjFhMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23C0CA33"
+        style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no"></iframe>
 </div>
 
 {% endblock %}

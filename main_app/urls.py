@@ -52,6 +52,9 @@ urlpatterns += [
 # calendar urls
 urlpatterns += [
     re_path(r'^calendar/$', views.CalendarView.as_view(), name='calendar'),
+    re_path(r'^event/new/$', views.event, name='event_new'),
+    re_path(r'^event/edit/(?P<event_id>[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})/$', views.event, name='event_edit'),
+
 ]
 
 # Task urls
