@@ -31,6 +31,7 @@
                     <div class="col col-10">
                         <h2>{{ profile.user.username | capfirst }}</h2>
                         <p class="card-text"><small class="text-muted">User since
+                                {{ profile.user.date_joined | timesince:now }}
                                 ago.
                             </small></p>
                     </div>

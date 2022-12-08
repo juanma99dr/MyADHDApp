@@ -61,6 +61,8 @@ class ProfileDetailView(LoginRequiredMixin, generic.DetailView):
         orderingByDate = ['-date_posted']
         context["postsByUser"] = Post.objects.filter(
             author=self.object).order_by(*orderingByDate)[:8]
+        context["pomodorosByUser"] = Pomodoro.objects.filter(
+            user=self.object.user).order_by(*orderingByDate)[:8]
         return context
 
 # PROFILE UPDATE VIEW
@@ -1614,6 +1616,31 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('profile', kwargs={'pk': self.object.user.id})
 
+# PROFILE LIST VIEW
+
+
+class ProfileListView(LoginRequiredMixin, generic.ListView):
+    model = Profile
+    context_object_name = 'profiles'
+    template_name = 'profile_list.html'
+    paginate_by = 3
+
+    def get_queryset(self):
+        query = self.request.GET.get("query")
+        orderingByName = ['user__username']
+        if query:
+            # filter by username
+            object_list = self.model.objects.filter(
+                user__username__icontains=query).order_by(*orderingByName)
+        else:
+            object_list = self.model.objects.all().order_by(*orderingByName)
+        return object_list
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["now"] = timezone.now()
+        return context
+
 
 # POMODORO VIEWS
 
@@ -1857,34 +1884,9 @@ class PostListView(generic.ListView):
             *orderingByVisits)[:5]
         return context
 
-
-# PROFILE LIST VIEW
-class ProfileListView(LoginRequiredMixin, generic.ListView):
-    model = Profile
-    context_object_name = 'profiles'
-    template_name = 'profile_list.html'
-    paginate_by = 3
-
-    def get_queryset(self):
-        query = self.request.GET.get("query")
-        orderingByName = ['user__username']
-        if query:
-            # filter by username
-            object_list = self.model.objects.filter(
-                user__username__icontains=query).order_by(*orderingByName)
-        else:
-            query=""
-            object_list = self.model.objects.filter(
-                user__username__icontains=query).order_by(*orderingByName)
-        return object_list
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
-        return context
-
-
 # DETAIL VIEW
+
+
 class PostDetailView(generic.DetailView):
     model = Post
     context_object_name = 'post'
