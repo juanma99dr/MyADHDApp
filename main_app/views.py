@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 from main_app.forms import NewUserForm, UpdateUserForm, UpdateProfileForm, PostForm, EventForm
 from django.contrib.auth.models import User
@@ -331,7 +331,7 @@ class PostDetailView(generic.DetailView):
 # CREATE VIEW
 class PostCreateView(LoginRequiredMixin, generic.CreateView):
     model = Post
-    fields = ['title', 'image', 'content', 'tag']
+    fields = ['title', 'image', 'content', 'tag','commentable']
     template_name = 'post_form.html'
     success_url = reverse_lazy("forum")
 
@@ -342,14 +342,15 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        profile = Profile.objects.get(user=self.request.user)
+        form.instance.author = profile
         return super().form_valid(form)
 
 
 # UPDATE VIEW
 class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Post
-    fields = ['title', 'image', 'content', 'tag']
+    fields = ['title', 'image', 'content', 'tag','commentable']
     template_name = 'post_form.html'
     # get the post data
 
@@ -360,7 +361,8 @@ class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
         return context
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        profile = Profile.objects.get(user=self.request.user)
+        form.instance.author = profile
         form.instance.edited = True
         return super().form_valid(form)
 
@@ -389,8 +391,11 @@ class CommentCreateView(LoginRequiredMixin, generic.CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        profile = Profile.objects.get(user=self.request.user)
+        form.instance.user = profile
         postSel = Post.objects.get(post_id=self.kwargs['post_id'])
+        if postSel.commentable == False:
+            return HttpResponseForbidden()
         form.instance.post = postSel
         return super().form_valid(form)
 
@@ -409,7 +414,8 @@ class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
         return context
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        profile = Profile.objects.get(user=self.request.user)
+        form.instance.user = profile
         form.instance.edited = True
         return super().form_valid(form)
 

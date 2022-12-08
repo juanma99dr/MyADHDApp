@@ -125,7 +125,7 @@ class Post(models.Model):
     image = models.ImageField(upload_to='post-images', null=True, blank=True)
     visits = models.PositiveIntegerField(default=0,)
     tag = models.ForeignKey(ForumTag, on_delete=models.SET_NULL, null=True, blank=True, help_text="Select a tag for this post")
-
+    commentable = models.BooleanField(default=True, help_text="Check if you want to allow comments on this post") 
     class Meta:
         permissions = (("is_admin", "Can do admin things"),)
 

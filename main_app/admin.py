@@ -35,11 +35,11 @@ class CommentInline(admin.TabularInline):
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'date_posted', 'edited',
-                    'visits', 'tag', 'post_id',)
+                    'visits', 'tag', 'post_id','commentable')
     ordering = ('title',)
     list_filter = ('author', 'tag')
     fields = [('title', 'author', 'content'), ("image","image_tag"), ('date_posted'),
-            'visits', 'tag','edited']
+            'visits', 'tag','edited', 'commentable']
     readonly_fields = ['image_tag']
     inlines = [CommentInline]
 

@@ -72,11 +72,12 @@
           <a href="{% url 'post-delete' post.post_id %}" class="button btn btn-outline-secondary">Delete Post</a>
           {% endif %}
           <!-- ADD COMMENT -->
+          {% if post.commentable == True %}
           <a href="{% url 'comment-create' post.post_id  %}" class="btn btn-outline-secondary">Add Comment</a>
-
+          {% endif %}
         </div>
       </div>
-
+      {% if post.commentable == True %}
       <!-- COMMENTS SECTION -->
       <div id="comments" class="container mb-5">
         {% for comment in comments %}
@@ -121,6 +122,7 @@
         </div>
         {% endfor %}
       </div>
+      {% endif %}
     </div>
 
     <!-- Right column -->
