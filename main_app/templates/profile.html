@@ -49,10 +49,36 @@
                     class="btn btn-outline-secondary btn-block mb-1">Edit</a>
             </div>
             {% endif %}
+            {% if user == profile.user or perms.main_app.is_admin %}
 
+            <div id="pomodoros">
+                <ul class="list-group list-group-numbered my-5">
+                    <div class="card card-header text-white bg-dark text-center">
+                        {% if user == profile.user %}
+                        
+                        Your pomodoros
+                        {% else %}
+                        Pomodoros by {{profile.user.username | capfirst}}
+                        {% endif %}
+                    </div>
+
+                    {% for pomodoro in pomodorosByUser %}
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto ">
+                            <a class="stretched-link" href="{{ pomodoro.get_absolute_url }}"></a>
+                            <div class="fw-bold ">{{ pomodoro.name | capfirst | truncatechars:24}}</div>
+                            <small>{{ pomodoro.tag }}</small>
+                        </div>
+                        <span class="badge bg-secondary rounded-pill">Time :{{ pomodoro.duration }}</span>
+                    </li>
+
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </div>
         <div class="col-12 col-sm-4">
-            <div id="posts">
+            <div id="posts mb-3">
                 <ul class="list-group list-group-numbered my-5">
                     <div class="card card-header text-white bg-dark text-center">
                         {% if user == profile.user %}
@@ -74,8 +100,9 @@
 
                     {% endfor %}
                 </ul>
-
             </div>
+
+
         </div>
     </div>
 </div>

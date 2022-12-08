@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="container my-5 d-grid justify-content-center">
+    <div class="content">
+        <div class="card" style="min-width: 400px;">
+            <div class="card-body">
+                <h5 class="card-title">{{pomodoro.name}}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Time: {{pomodoro.duration}} mins. </h6>
+                <p class="card-text">{{pomodoro.description | linebreaks }}</p>
+                <small><span class="badge bg-secondary rounded-pill"> {{ pomodoro.tag }}</span></small>
+            </div>
+        </div>
+        <div class="row justify-content-center my-3">
+                <a href="{% url 'profile' pomodoro.user.id %}" class=" btn btn-outline-secondary col me-3" style="max-width: 180px;">Back to profile</a>
+                <a href="{% url 'pomodoro' %}" class="btn btn-outline-secondary col" style="max-width: 180px;">New pomodoro</a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

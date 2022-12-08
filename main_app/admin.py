@@ -81,4 +81,4 @@ class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'content', 'user', 'event_id')
     ordering = ('title',)
     list_filter = ('user',)
-    fields = ['title', 'user', 'content',('start_time','end_time')]
+    fields = ['title', 'user', 'content','start_time']

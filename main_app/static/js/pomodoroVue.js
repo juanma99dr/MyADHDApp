@@ -134,6 +134,7 @@ let pomodoroComponent = new Vue({
                     } else {
                         this.pomodoro.running = false;
                         this.pomodoro.completed = true;
+                        alert("Pomodoro completed, take a short break!");
                     }
                 }
             }
@@ -148,6 +149,7 @@ let pomodoroComponent = new Vue({
                         this.shortBreak.running = false;
                         this.shortBreak.completed = true;
                         this.finished = true;
+                        alert("Short break completed, start a new pomodoro!");
                     }
                 }
             }

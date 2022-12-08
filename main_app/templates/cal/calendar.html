@@ -6,10 +6,21 @@
 {% if user.is_authenticated %}
 <link rel="stylesheet" href="{% static 'css/calendar.css' %}" />
 <div class="container my-5">
-    <div class="clearfix">
-        <a class="btn btn-info left" href="{% url 'calendar' %}?{{ prev_month }}"> Previous Month </a>
-        <a class="btn btn-info right" href="{% url 'calendar' %}?{{ next_month }}"> Next Month </a>
+    <div class="d-flex justify-content-center mb-3">
+        <div>
+            <a class="btn btn-outline-secondary " href="{% url 'calendar' %}?{{ prev_month }}"> Previous Month </a>
+        </div>
+        <div>
+            <a class="btn btn-outline-secondary mx-3 " href="{% url 'event_new' %}">New event</a>
+
+        </div>
+        <div>
+            <a class="btn btn-outline-secondary " href="{% url 'calendar' %}?{{ next_month }}"> Next Month </a>
+
+        </div>
     </div>
+
+
     {{ calendar }}
 </div>
 {% else %}

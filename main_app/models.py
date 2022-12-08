@@ -321,12 +321,12 @@ class Event(models.Model):
     content = models.TextField(help_text="Enter the description of the event", max_length=1000, null=True, blank=True)  
     start_time = models.DateTimeField(help_text="Enter the start time of the event")
     user = models.ForeignKey(
-        User, related_name='events', on_delete=models.SET_NULL, null=True, blank=True)
+        User, related_name='events', on_delete=models.CASCADE, null=True, blank=True)
     @property
     def get_html_url(self):
         url = reverse('event_edit', args=(self.event_id,))
         return f'<a href="{url}"> {self.title} </a>'
-    
+            
     def __str__(self):
         return self.title
 

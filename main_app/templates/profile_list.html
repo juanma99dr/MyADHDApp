@@ -62,8 +62,10 @@
         </span>
     </div>
     {% else %}
-    <p>There are no profiles in the website.</p>
-    {% endif %}
+    <div class="alert alert-primary" role="alert">
+        No profiles found.
+    </div>
+{% endif %}
 </div>
 
 {% endblock %}
