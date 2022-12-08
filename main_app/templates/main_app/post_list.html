@@ -29,17 +29,19 @@
         <div class="card-header">
           <div class="row mb-1">
             <div class="col col-1">
+              {% if post.author.profilePic %}
               <img src="{{ post.author.profilePic.url }}" alt="Avatar" class="img-fluid"
                 style="width: 50px; min-width: 30px;" />
+              {% endif %}
             </div>
             <div class="col col-10">
               <h2>{{ post.title | capfirst }}</h2>
               <p class="card-text"><small class="text-muted">Posted by
-                {{ post.author.user.username | capfirst }} {{ post.date_posted | timesince:now }}
-                ago.
-              </small></p>
+                  {{ post.author.user.username | capfirst }} {{ post.date_posted | timesince:now }}
+                  ago.
+                </small></p>
             </div>
-            
+
           </div>
         </div>
         <div class="card-body">

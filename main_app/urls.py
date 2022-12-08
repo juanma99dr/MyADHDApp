@@ -11,6 +11,7 @@ urlpatterns = [
             views.ProfileDetailView.as_view(), name='profile'),
     re_path(r'^profile/update/(?P<pk>\d+)/$',
             views.ProfileUpdateView.as_view(), name='profile-update'),
+    re_path(r'^profiles/$', views.ProfileListView.as_view(), name='profiles'),
 ]
 
 # Forum urls

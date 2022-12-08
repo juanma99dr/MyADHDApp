@@ -1,0 +1,68 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h1>Profile List</h1>
+    <div id="search">
+        <form method='GET'>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" name='query' placeholder="Username" aria-label="Username"
+                    value='{{ request.GET.query }}'>
+                <input class="button btn btn-outline-secondary" type='submit' value="Search User">
+            </div>
+        </form>
+    </div>
+
+    {% if profiles %}
+    <div id="profiles">
+
+        {% for profile in profiles %}
+        <div class="card mb-3">
+            <a href="{{ profile.get_absolute_url }}" class="stretched-link "></a>
+            <div class="card-header">
+                <div class="row mb-1">
+                    <div class="col col-1">
+                        {% if profile.profilePic %}
+                        <img src="{{ profile.profilePic.url }}" alt="Avatar" class="img-fluid"
+                            style="width: 50px; min-width: 30px;" />
+
+                        {% endif %}
+                    </div>
+                    <div class="col col-10">
+                        <h2>{{ profile.user.username | capfirst }}</h2>
+                        <p class="card-text"><small class="text-muted">User since
+                                ago.
+                            </small></p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-3 mb-5 text-center">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; First</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    {% else %}
+    <p>There are no profiles in the website.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

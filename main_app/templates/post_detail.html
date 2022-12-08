@@ -13,8 +13,10 @@
       <div class="row mb-3">
         <div class="col col-1">
           <a href="{% url 'profile' post.author.user.id  %}">
+            {% if profilePic %}
             <img src="{{ profilePic.url }}" alt="Avatar" class="img-fluid  img-thumbnail"
               style="width: 50px; min-width: 30px;" />
+              {% endif %}
           </a>
         </div>
         <div class="col col-10">
@@ -86,8 +88,10 @@
             <div class="row mb-3">
               <div class="col col-1 me-1">
                 <a href="{% url 'profile' comment.user.user.id  %}">
+                  {% if comment.user.profilePic %}
                   <img src="{{ comment.user.profilePic.url }}" alt="Avatar" class="img-fluid img-thumbnail"
                     style="width: 50px; min-width: 30px;" />
+                  {% endif %}
                 </a>
               </div>
               <div class="col col-10">

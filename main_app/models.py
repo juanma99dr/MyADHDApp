@@ -13,7 +13,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 # Model for the user profile
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profilePic = models.ImageField(upload_to='profile-pictures', blank=True, null=True)
+    profilePic = models.ImageField(upload_to='profile-pictures',blank=True, null=True, default="default.jpg")
     bio = models.TextField(max_length=500, blank=True)
     
     def image_tag(self):
@@ -27,7 +27,7 @@ class Profile(models.Model):
         return self.bio 
     
     def get_absolute_url(self):
-        return reverse('profile-detail', args=[str(self.id)])
+        return reverse('profile', args=[str(self.id)])
     
 
 # ------ POMDORO SECTION ------
@@ -51,7 +51,7 @@ class Pomodoro(models.Model):
     name = models.CharField(
         max_length=200, help_text='Enter a pomodoro name', default='Pomodoro')
     user = models.ForeignKey(
-        User, related_name='pomodoros', on_delete=models.SET_NULL, null=True, blank=True)
+        User, related_name='pomodoros', on_delete=models.CASCADE, null=True, blank=True)
     duration = models.PositiveIntegerField(
         help_text='Enter the duration of the pomodoro in minutes', default=25, validators=[MinValueValidator(1), MaxValueValidator(60)])
     description = models.CharField(
@@ -116,13 +116,13 @@ class Post(models.Model):
         primary_key=True, default=uuid.uuid4, help_text="Unique ID for this particular post")
     title = models.CharField(max_length=100, help_text='Enter a post title')
     author = models.ForeignKey(
-        Profile, related_name='posts', on_delete=models.SET_NULL, null=True, blank=True)
+        Profile, related_name='posts', on_delete=models.CASCADE, null=True, blank=True)
     date_posted = models.DateTimeField(
         default=datetime.now, help_text="Enter the date and time the post was posted")
     edited = models.BooleanField(default=False)
     content = models.TextField(
         max_length=5000, help_text="Enter the content of the post")
-    image = models.ImageField(upload_to='post-images', null=True, blank=True)
+    image = models.ImageField(upload_to='post-images', blank=True, null=True)
     visits = models.PositiveIntegerField(default=0,)
     tag = models.ForeignKey(ForumTag, on_delete=models.SET_NULL, null=True, blank=True, help_text="Select a tag for this post")
     commentable = models.BooleanField(default=True, help_text="Check if you want to allow comments on this post") 
@@ -206,7 +206,7 @@ class Comment(models.Model):
     comment_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, help_text="Unique ID for this particular comment")
     user = models.ForeignKey(
-        Profile, related_name='comments', on_delete=models.SET_NULL, null=True, blank=True)
+        Profile, related_name='comments', on_delete=models.CASCADE, null=True, blank=True)
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE, null=True, blank=True)
     date_posted = models.DateTimeField(
