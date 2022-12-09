@@ -21,8 +21,6 @@ from django.utils.safestring import mark_safe
 import calendar
 
 # INDEX VIEW
-
-
 def index(request):
     pomodoros = Pomodoro.objects.all()
     tags = PomodoroTag.objects.all()
@@ -34,7 +32,7 @@ def index(request):
                   )
 
 
-# USER VIEWS
+# -------------------- USER VIEWS --------------------
 
 # USER REGISTRATION VIEW
 def register_request(request):
@@ -47,15 +45,13 @@ def register_request(request):
         messages.error(
             request, "Unsuccessful registration. Invalid information.")
     form = NewUserForm()
-    return render(request=request, template_name="register.html", context={"register_form": form})
-
-# PROFILE VIEW
+    return render(request=request, template_name="main_app/register.html", context={"register_form": form})
 
 # PROFILE LIST VIEW
 class ProfileListView(LoginRequiredMixin, generic.ListView):
     model = Profile
     context_object_name = 'profiles'
-    template_name = 'profile_list.html'
+    template_name = 'main_app/profile_list.html'
     paginate_by = 10
 
     def get_queryset(self):
@@ -77,7 +73,7 @@ class ProfileListView(LoginRequiredMixin, generic.ListView):
 # Profile Detail View
 class ProfileDetailView(LoginRequiredMixin, generic.DetailView):
     model = Profile
-    template_name = 'profile.html'
+    template_name = 'main_app/profile.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -91,12 +87,10 @@ class ProfileDetailView(LoginRequiredMixin, generic.DetailView):
         return context
 
 # PROFILE UPDATE VIEW
-
-
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
     fields = ['profilePic', 'bio']
-    template_name = 'profile_form.html'
+    template_name = 'main_app/profile_form.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -107,19 +101,19 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('profile', kwargs={'pk': self.object.user.id})
 
 
-# POMODORO VIEWS
+# ----------------- POMODORO VIEWS -----------------
 
 
 # POMODORO DETAIL VIEW
 class PomodoroDetailView(LoginRequiredMixin, generic.DetailView):
     model = Pomodoro
-    template_name = "pomodoro_detail.html"
+    template_name = "pomodoro/pomodoro_detail.html"
 
 # POMODORO CREATE VIEW
 class PomodoroCreateView(CreateView):
     model = Pomodoro
     fields = ['name', 'description', 'duration', 'tag']
-    template_name = 'pomodoro.html'
+    template_name = 'pomodoro/pomodoro.html'
     success_url = reverse_lazy("pomodoro")
 
     def get_context_data(self, **kwargs):
@@ -132,13 +126,13 @@ class PomodoroCreateView(CreateView):
         return super().form_valid(form)
 
 
-# POMODORO TAG VIEWS
+# ------------------- POMODORO TAG VIEWS -------------------
 
 # POMODORO TAG CREATE VIEW
 class PomodoroTagCreateView(LoginRequiredMixin, CreateView):
     model = PomodoroTag
     fields = ['name']
-    template_name = 'pomodoro_tag_form.html'
+    template_name = 'pomodoro/pomodoro_tag_form.html'
     success_url = reverse_lazy("pomodoro")
 
     def get_context_data(self, **kwargs):
@@ -147,12 +141,10 @@ class PomodoroTagCreateView(LoginRequiredMixin, CreateView):
         return context
 
 # POMODORO TAG UPDATE VIEW
-
-
 class PomodoroTagUpdateView(LoginRequiredMixin, UpdateView):
     model = PomodoroTag
     fields = ['name']
-    template_name = 'pomodoro_tag_form.html'
+    template_name = 'pomodoro/pomodoro_tag_form.html'
     success_url = reverse_lazy("pomodoro")
 
     def get_context_data(self, **kwargs):
@@ -161,17 +153,14 @@ class PomodoroTagUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 # POMODORO TAG DELETE VIEW
-
-
 class PomodoroTagDeleteView(LoginRequiredMixin, DeleteView):
     model = PomodoroTag
-    template_name = 'pomodoro_tag_confirm_delete.html'
+    template_name = 'pomodoro/pomodoro_tag_confirm_delete.html'
     success_url = reverse_lazy("pomodoro")
 
 
-# EVENT VIEWS
 
-# CALENDAR VIEW
+# ---------------- CALENDAR VIEW ----------------
 class CalendarView(LoginRequiredMixin, generic.ListView):
     model = Event
     template_name = 'cal/calendar.html'
@@ -232,13 +221,13 @@ def event(request, event_id=None):
     return render(request, 'cal/event.html', {'form': form})
 
 
-# TASK VIEWS
+# -------------------- TASK VIEWS --------------------
 
 # TASK CREATE VIEW
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     fields = ['title', 'content', 'tag']
-    template_name = 'task.html'
+    template_name = 'task/task.html'
     success_url = reverse_lazy("task")
 
     def get_context_data(self, **kwargs):
@@ -258,12 +247,10 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 # TASK UPDATE VIEW
-
-
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     fields = ['title', 'content', 'tag']
-    template_name = 'task.html'
+    template_name = 'task/task.html'
     success_url = reverse_lazy("task")
 
     def get_context_data(self, **kwargs):
@@ -281,21 +268,19 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 # TASK DELETE VIEW
-
-
 class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
-    template_name = 'task_confirm_delete.html'
+    template_name = 'task/task_confirm_delete.html'
     success_url = reverse_lazy("task")
 
 
-# TASK TAG VIEWS
+# ----------------------- TASK TAG VIEWS -----------------------
 
 # TASK TAG CREATE VIEW
 class TaskTagCreateView(LoginRequiredMixin, CreateView):
     model = TaskTag
     fields = ['name']
-    template_name = 'task_tag_form.html'
+    template_name = 'task/task_tag_form.html'
     success_url = reverse_lazy("task")
 
     def get_context_data(self, **kwargs):
@@ -304,12 +289,10 @@ class TaskTagCreateView(LoginRequiredMixin, CreateView):
         return context
 
 # TASK TAG UPDATE VIEW
-
-
 class TaskTagUpdateView(LoginRequiredMixin, UpdateView):
     model = TaskTag
     fields = ['name']
-    template_name = 'task_tag_form.html'
+    template_name = 'task/task_tag_form.html'
     success_url = reverse_lazy("task")
 
     def get_context_data(self, **kwargs):
@@ -318,21 +301,19 @@ class TaskTagUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 # TASK TAG DELETE VIEW
-
-
 class TaskTagDeleteView(LoginRequiredMixin, DeleteView):
     model = TaskTag
-    template_name = 'task_tag_confirm_delete.html'
+    template_name = 'task/task_tag_confirm_delete.html'
     success_url = reverse_lazy("task")
 
 
-# FORUM VIEWS (POSTS AND COMMENTS)
+# -------------------- FORUM VIEWS --------------------
 
 # LIST VIEW
 class PostListView(generic.ListView):
     model = Post
     context_object_name = 'posts'
-    template_name = 'post_list.html'
+    template_name = 'forum/post_list.html'
     paginate_by = 5
 
     def get_queryset(self):
@@ -360,7 +341,7 @@ class PostListView(generic.ListView):
 class PostDetailView(generic.DetailView):
     model = Post
     context_object_name = 'post'
-    template_name = 'post_detail.html'
+    template_name = 'forum/post_detail.html'
     # each time a post is viewed, the view count is incremented
 
     def get(self, request, *args, **kwargs):
@@ -382,12 +363,10 @@ class PostDetailView(generic.DetailView):
         return self.render_to_response(context)
 
 # CREATE VIEW
-
-
 class PostCreateView(LoginRequiredMixin, generic.CreateView):
     model = Post
     fields = ['title', 'image', 'content', 'tag', 'commentable']
-    template_name = 'post_form.html'
+    template_name = 'forum/post_form.html'
     success_url = reverse_lazy("forum")
 
     def get_context_data(self, **kwargs):
@@ -406,7 +385,7 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
 class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Post
     fields = ['title', 'image', 'content', 'tag', 'commentable']
-    template_name = 'post_form.html'
+    template_name = 'forum/post_form.html'
     # get the post data
 
     def get_context_data(self, **kwargs):
@@ -422,21 +401,19 @@ class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
         return super().form_valid(form)
 
 # DELETE VIEW
-
-
 class PostDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Post
     success_url = reverse_lazy("forum")
-    template_name = 'post_confirm_delete.html'
+    template_name = 'forum/post_confirm_delete.html'
 
 
-# COMMENT VIEWS
+# ---------------- COMMENT VIEWS ----------------
 
 # CREATE VIEW
 class CommentCreateView(LoginRequiredMixin, generic.CreateView):
     model = Comment
     fields = ['content', 'image']
-    template_name = 'comment_form.html'
+    template_name = 'forum/comment_form.html'
     # go to the post detail page after creating a comment
 
     def get_success_url(self):
@@ -457,12 +434,10 @@ class CommentCreateView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 # UPDATE VIEW
-
-
 class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Comment
     fields = ['content', 'image']
-    template_name = 'comment_form.html'
+    template_name = 'forum/comment_form.html'
 
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'pk': self.object.post.post_id})
@@ -482,19 +457,19 @@ class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
 # DELETE VIEW
 class CommentDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Comment
-    template_name = 'comment_confirm_delete.html'
+    template_name = 'forum/comment_confirm_delete.html'
 
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'pk': self.object.post.post_id})
 
 
-# FORUM TAG VIEWS
+# ------------------ FORUM TAG VIEWS ------------------
 
 # CREATE VIEW
 class ForumTagCreateView(LoginRequiredMixin, generic.CreateView):
     model = ForumTag
     fields = ['name']
-    template_name = 'forum_tag_form.html'
+    template_name = 'forum/forum_tag_form.html'
     success_url = reverse_lazy("forum")
 
     def get_context_data(self, **kwargs):
@@ -503,12 +478,10 @@ class ForumTagCreateView(LoginRequiredMixin, generic.CreateView):
         return context
 
 # UPDATE VIEW
-
-
 class ForumTagUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = ForumTag
     fields = ['name']
-    template_name = 'forum_tag_form.html'
+    template_name = 'forum/forum_tag_form.html'
     success_url = reverse_lazy("forum")
 
     def get_context_data(self, **kwargs):
@@ -517,17 +490,14 @@ class ForumTagUpdateView(LoginRequiredMixin, generic.UpdateView):
         return context
 
 # DELETE VIEW
-
-
 class ForumTagDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = ForumTag
     success_url = reverse_lazy("forum")
-    template_name = 'forum_tag_confirm_delete.html'
+    template_name = 'forum/forum_tag_confirm_delete.html'
 
 
-# API VIEWS
 
-# REST FRAMEWORK
+# -----------------  REST FRAMEWORK -----------------
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
@@ -536,15 +506,11 @@ def api_root(request, format=None):
     })
 
 # ALL USERS
-
-
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 # ALL POMODOROS
-
-
 class PomodoroList(generics.ListAPIView):
     queryset = Pomodoro.objects.all()
     serializer_class = PomodoroSerializer

@@ -6,7 +6,7 @@ from main_app.models import *
 
 # Create your forms here.
 
-
+# Form for creating new user
 class NewUserForm(UserCreationForm):
 	email = forms.EmailField(required=True)
 
@@ -23,15 +23,7 @@ class NewUserForm(UserCreationForm):
 			profile.save()
 		return user
 
-
-# Forms for Post
-
-class PostForm(ModelForm):
-	class Meta:
-		model = Post
-		fields = ['title', 'content', 'image', 'tag']
-
-
+# Form for updating user profile
 class UpdateUserForm(forms.ModelForm):
     username = forms.CharField(max_length=100,
                                required=True,
@@ -43,7 +35,7 @@ class UpdateUserForm(forms.ModelForm):
         model = User
         fields = ['username', 'email']
 
-
+# Form for updating user profile
 class UpdateProfileForm(forms.ModelForm):
     profilePic = forms.ImageField(
     	widget=forms.FileInput(attrs={'class': 'form-control-file'}))
@@ -54,7 +46,7 @@ class UpdateProfileForm(forms.ModelForm):
         model = Profile
         fields = ['profilePic', 'bio']
 
-
+# Form for creating new event
 class EventForm(ModelForm):
   class Meta:
     model = Event
@@ -67,4 +59,9 @@ class EventForm(ModelForm):
     super(EventForm, self).__init__(*args, **kwargs)
     self.fields['start_time'].input_formats = ('%Y-%m-%dT%H:%M',)
     
-    
+# Forms for Post
+class PostForm(ModelForm):
+	class Meta:
+		model = Post
+		fields = ['title', 'content', 'image', 'tag']
+
