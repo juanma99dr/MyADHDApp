@@ -1,7 +1,7 @@
 # Brain Building - My ADHD App.
 
 # Ejecutar el proyecto
-- Crear un entorno virtual si quieres evitar conflictos con otros proyectos django
+- Crear un entorno virtual: 
    mkvirtualenv nombreDelEntorno
    
 - Instalar los paquetes necesarios:
