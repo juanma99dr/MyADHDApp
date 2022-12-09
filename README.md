@@ -7,7 +7,7 @@
 - Instalar los paquetes necesarios:
    pip install -r requirements.txt
 
--Setup de la base de datos 
+- Setup de la base de datos 
    python3 manage.py migrate
 
 - Ejecutar la aplicación:
