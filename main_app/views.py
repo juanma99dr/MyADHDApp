@@ -111,7 +111,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
 
 # POMODORO DETAIL VIEW
-class PomodoroDetailView(generic.DetailView):
+class PomodoroDetailView(LoginRequiredMixin, generic.DetailView):
     model = Pomodoro
     template_name = "pomodoro_detail.html"
 
@@ -135,7 +135,7 @@ class PomodoroCreateView(CreateView):
 # POMODORO TAG VIEWS
 
 # POMODORO TAG CREATE VIEW
-class PomodoroTagCreateView(CreateView, LoginRequiredMixin):
+class PomodoroTagCreateView(LoginRequiredMixin, CreateView):
     model = PomodoroTag
     fields = ['name']
     template_name = 'pomodoro_tag_form.html'
@@ -149,7 +149,7 @@ class PomodoroTagCreateView(CreateView, LoginRequiredMixin):
 # POMODORO TAG UPDATE VIEW
 
 
-class PomodoroTagUpdateView(UpdateView, LoginRequiredMixin):
+class PomodoroTagUpdateView(LoginRequiredMixin, UpdateView):
     model = PomodoroTag
     fields = ['name']
     template_name = 'pomodoro_tag_form.html'
@@ -163,7 +163,7 @@ class PomodoroTagUpdateView(UpdateView, LoginRequiredMixin):
 # POMODORO TAG DELETE VIEW
 
 
-class PomodoroTagDeleteView(DeleteView, LoginRequiredMixin):
+class PomodoroTagDeleteView(LoginRequiredMixin, DeleteView):
     model = PomodoroTag
     template_name = 'pomodoro_tag_confirm_delete.html'
     success_url = reverse_lazy("pomodoro")
@@ -172,7 +172,7 @@ class PomodoroTagDeleteView(DeleteView, LoginRequiredMixin):
 # EVENT VIEWS
 
 # CALENDAR VIEW
-class CalendarView(generic.ListView, LoginRequiredMixin):
+class CalendarView(LoginRequiredMixin, generic.ListView):
     model = Event
     template_name = 'cal/calendar.html'
 
@@ -235,7 +235,7 @@ def event(request, event_id=None):
 # TASK VIEWS
 
 # TASK CREATE VIEW
-class TaskCreateView(CreateView, LoginRequiredMixin):
+class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     fields = ['title', 'content', 'tag']
     template_name = 'task.html'
@@ -260,7 +260,7 @@ class TaskCreateView(CreateView, LoginRequiredMixin):
 # TASK UPDATE VIEW
 
 
-class TaskUpdateView(UpdateView, LoginRequiredMixin):
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     fields = ['title', 'content', 'tag']
     template_name = 'task.html'
@@ -283,7 +283,7 @@ class TaskUpdateView(UpdateView, LoginRequiredMixin):
 # TASK DELETE VIEW
 
 
-class TaskDeleteView(DeleteView, LoginRequiredMixin):
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = 'task_confirm_delete.html'
     success_url = reverse_lazy("task")
@@ -292,7 +292,7 @@ class TaskDeleteView(DeleteView, LoginRequiredMixin):
 # TASK TAG VIEWS
 
 # TASK TAG CREATE VIEW
-class TaskTagCreateView(CreateView, LoginRequiredMixin):
+class TaskTagCreateView(LoginRequiredMixin, CreateView):
     model = TaskTag
     fields = ['name']
     template_name = 'task_tag_form.html'
@@ -306,7 +306,7 @@ class TaskTagCreateView(CreateView, LoginRequiredMixin):
 # TASK TAG UPDATE VIEW
 
 
-class TaskTagUpdateView(UpdateView, LoginRequiredMixin):
+class TaskTagUpdateView(LoginRequiredMixin, UpdateView):
     model = TaskTag
     fields = ['name']
     template_name = 'task_tag_form.html'
@@ -320,7 +320,7 @@ class TaskTagUpdateView(UpdateView, LoginRequiredMixin):
 # TASK TAG DELETE VIEW
 
 
-class TaskTagDeleteView(DeleteView, LoginRequiredMixin):
+class TaskTagDeleteView(LoginRequiredMixin, DeleteView):
     model = TaskTag
     template_name = 'task_tag_confirm_delete.html'
     success_url = reverse_lazy("task")

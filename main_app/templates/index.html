@@ -1,21 +1,55 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<div class="container my-5">
-    <h1 class="text-center">Brain Building - My ADHD App.</h1>
-    <div class="row">
-        <div class="col-md-6">
-            <h2 class="text-center">About</h2>
-            <p class="text-center">This is a simple app to help you build your brain.</p>
-        </div>
-        <div class="col-md-6">
-            <h2 class="text-center">Contact</h2>
-            <p class="text-center">If you have any questions, please contact me at <a href="mailto:">.</a></p>
-        </div>
+{% load static %}
+<div class="container mb-1">
+    <div id="logo" class="text-center">
+        <img src="{% static 'images/logo.png' %}" alt="logo" width="50%" class="img-fluid">
     </div>
-    <div class="row">
-        <li><a href="{% url 'profiles' %}">All profiles</a></li>
+    <div class="row mb-5">
+        <div class="col-12 col-md-3 mb-3">
+            <div class="card">
+                <a class="stretched-link" href="{% url 'pomodoro' %}"></a>
+                <img class="card-img-top" src="{% static 'images/icon-red.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Pomodoro</h5>
+                    <p class="card-text">A stopwatch to help you be more efficient at completing tasks in a given time.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 mb-3">
+            <div class="card">
+                <a class="stretched-link" href="{% url 'task' %}"></a>
+                <img class="card-img-top" src="{% static 'images/icon-blue.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Tasks</h5>
+                    <p class="card-text">A to-do list to help you stay organized with your daily chores and responsabilities.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 mb-3">
+            <div class="card">
+                <a class="stretched-link" href="{% url 'calendar' %}"></a>
+                <img class="card-img-top" src="{% static 'images/icon-green.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Calendar</h5>
+                    <p class="card-text">A calendar in which to write down your events and day-to-day responsibilities.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 mb-3">
+            <div class="card">
+                <a class="stretched-link" href="{% url 'forum' %}"></a>
+                <img class="card-img-top" src="{% static 'images/icon-yellow.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Forum</h5>
+                    <p class="card-text">A place where you can feel safe and talk to people with your same condition.</p>
+                </div>
+            </div>
+        </div>
 
     </div>
+
+
 </div>
 {% endblock %}

@@ -36,26 +36,17 @@ a {
 .right {
   float: right; }
 
-.btn {
-  outline: none;
-  color: black;
-  background-color: transparent;
-  box-shadow: 0 0 0 0; }
-
 .clearfix {
   margin: 15px; }
+
+.center {
+  float: center; }
 
 .left {
   float: left; }
 
 .right {
   float: right; }
-
-.btn {
-  outline: none;
-  color: black;
-  background-color: transparent;
-  box-shadow: 0 0 0 0; }
 
 .clearfix {
   margin: 15px; }
