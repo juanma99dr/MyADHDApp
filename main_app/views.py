@@ -240,6 +240,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
                 user=self.request.user, status=True)
         context['tags'] = TaskTag.objects.all().filter()
         context["pageTitle"] = "Create Task"
+        context["isCreate"] = False
         return context
 
     def form_valid(self, form):
@@ -249,7 +250,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 # TASK UPDATE VIEW
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
-    fields = ['title', 'content', 'tag']
+    fields = ['title', 'content', 'tag', 'status']
     template_name = 'task/task.html'
     success_url = reverse_lazy("task")
 
@@ -261,6 +262,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
             user=self.request.user, status=True)
         context['tags'] = TaskTag.objects.all().filter()
         context["pageTitle"] = "Update Task"
+        context["isCreate"] = True
         return context
 
     def form_valid(self, form):

@@ -29,6 +29,12 @@
                 <textarea class="form-control" name="content" required id="content" rows="5" id="id_content"
                     placeholder="Content">{{task.content}}</textarea>
             </div>
+            {% if isCreate %}
+            <div class="form-group">
+                <label class="form-check-label" for="status">Is completed</label>
+                <input class="form-check-input" type="checkbox" name="status" id="status">
+            </div>
+            {% endif %}
 
             {% if user.is_authenticated %}
             <div class="form-group">
