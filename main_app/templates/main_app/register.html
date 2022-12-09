@@ -5,7 +5,7 @@
 
 {% if form.errors %}
 <p>Your username and password didn't match. Please try again.</p>
-<a href="{% url 'index' %}">GO HOME</a>
+<a href="{% url 'index' %}">HOME</a>
 
 {% endif %}
 {% if not user.is_authenticated %}
